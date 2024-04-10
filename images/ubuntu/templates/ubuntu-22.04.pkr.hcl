@@ -155,7 +155,7 @@ source "azure-arm" "build_image" {
   location                               = "${var.location}"
   managed_image_name                     = "${local.managed_image_name}"
   managed_image_resource_group_name      = "${var.managed_image_resource_group_name}"
-  os_disk_size_gb                        = "75"
+  os_disk_size_gb                        = "150"
   os_type                                = "Linux"
   private_virtual_network_with_public_ip = "${var.private_virtual_network_with_public_ip}"
   subscription_id                        = "${var.subscription_id}"
@@ -277,6 +277,7 @@ build {
       "${path.root}/../scripts/build/install-actions-cache.sh",
       "${path.root}/../scripts/build/install-runner-package.sh",
       "${path.root}/../scripts/build/install-apt-common.sh",
+      "${path.root}/../scripts/build/install-vita-bin-setup-apt.sh",
       "${path.root}/../scripts/build/install-azcopy.sh",
       "${path.root}/../scripts/build/install-azure-cli.sh",
       "${path.root}/../scripts/build/install-azure-devops-cli.sh",
@@ -307,7 +308,7 @@ build {
       "${path.root}/../scripts/build/install-leiningen.sh",
       "${path.root}/../scripts/build/install-miniconda.sh",
       "${path.root}/../scripts/build/install-mono.sh",
-      "${path.root}/../scripts/build/install-kotlin.sh",
+      // "${path.root}/../scripts/build/install-kotlin.sh",
       "${path.root}/../scripts/build/install-mysql.sh",
       "${path.root}/../scripts/build/install-mssql-tools.sh",
       "${path.root}/../scripts/build/install-sqlpackage.sh",
