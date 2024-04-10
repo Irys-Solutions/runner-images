@@ -16,15 +16,12 @@
 #
 # ^--- IMPORTANT NOTE ---^
 
-node_version="18"
-postgres_server_version="15"  # NOTE: vita-ci-cd.yml has to be updated with the same version
-python_version="3.12"
-python_source_version="${python_version}.3"
-
-export NODE_VERSION="${node_version}"
-export POSTGRES_SERVER_VERSION="${postgres_server_version}"
-export PYTHON_VERSION="${python_version}"
-export PYTHON_SOURCE_VERSION="${python_source_version}"
+export NODE_VERSION="18"
+export OLD_PYTHON_SOURCE_VERSION="3.8.19"
+export OLD_PYTHON_VERSION="3.8"
+export POSTGRES_SERVER_VERSION="15" # NOTE: vita-ci-cd.yml has to be updated with the same version
+export PYTHON_SOURCE_VERSION="3.12.3"
+export PYTHON_VERSION="3.12"
 #!/bin/bash -xe
 
 # v--- IMPORTANT NOTE ---v
@@ -92,15 +89,15 @@ sudo apt-get install \
   zlib1g-dev \
   -y
 sudo apt-get autoremove
-# KEEP INSTALL OF PYTHON 3.8 for now, until we complete migration in OSLO-5150
-if which "python3.8"; then
-  echo "Python 3.8 installed already"
+# KEEP INSTALL OF OLD PYTHON VERSION for now, until we complete migration in OSLO-5150
+if which "python${OLD_PYTHON_VERSION}"; then
+  echo "Python ${OLD_PYTHON_VERSION} installed already"
 else
-  echo "Python 3.8 installing from source"
+  echo "Python ${OLD_PYTHON_VERSION} installing from source"
   cd /tmp
-  curl -O "https://www.python.org/ftp/python/3.8.19/Python-3.8.19.tgz"
-  tar xzf "Python-3.8.19.tgz"
-  cd "Python-3.8.19"
+  curl -O "https://www.python.org/ftp/python/${OLD_PYTHON_SOURCE_VERSION}/Python-${OLD_PYTHON_SOURCE_VERSION}.tgz"
+  tar xzf "Python-${OLD_PYTHON_SOURCE_VERSION}.tgz"
+  cd "Python-${OLD_PYTHON_SOURCE_VERSION}"
   ./configure --enable-optimizations
   make -j "$(nproc)"
   sudo make altinstall
