@@ -75,6 +75,7 @@ sudo apt-get install \
   libncurses5-dev \
   libnss3-dev \
   libreadline-dev \
+  libpq-dev \
   libsqlite3-dev \
   libssl-dev \
   postgresql-client \
