@@ -39,11 +39,12 @@ export PYTHON_VERSION="3.12"
 # make setup-apt-to-runner-images
 #
 # ^--- IMPORTANT NOTE ---^
+
+[ X"$(uname -s)"X = X"Linux"X ] || exit 0
+
 basedir=$(dirname "$0")
 
 [ -f "${basedir}/vita-versions.sh" ] && source "${basedir}/vita-versions.sh"
-
-[ X"$(uname -s)"X = X"Linux"X ] || exit 0
 
 sudo rm -f /etc/apt/sources.list.d/pgdg.list /etc/apt/sources.list.d/azure-cli.list
 sudo apt-get update
