@@ -51,6 +51,7 @@ sudo rm -f \
   /etc/apt/sources.list.d/00-security.debian.org.list \
   /etc/apt/sources.list.d/00-security.ubuntu.com.list \
   /etc/apt/sources.list.d/01-mirror.linux.org.au.list \
+  /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list \
   /etc/apt/sources.list.d/pgdg.list \
   /etc/apt/sources.list.d/azure-cli.list
 
@@ -67,6 +68,10 @@ if [ X"$(lsb_release -is)"X = X"Debian"X ]; then
 elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
   echo "deb http://security.ubuntu.com/ubuntu $(lsb_release -cs)-security main restricted universe multiverse" \
     | sudo tee /etc/apt/sources.list.d/00-security.ubuntu.com.list
+  ( echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs) main restricted universe multiverse" \
+    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" \
+    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" \
+  ) | sudo tee /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list
 else
   echo "Unknown distribution: $(lsb_release -is)"
   exit 1
