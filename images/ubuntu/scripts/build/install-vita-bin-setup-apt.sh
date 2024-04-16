@@ -34,6 +34,7 @@ export PYTHON_VERSION="3.12"
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/scripts/build/install-vita-bin-setup-apt.sh
 #
 # Assuming vita and runner-images are checked out in the same parent directory;
+
 # to copy to the runner-images repository, in the vita repository, run:
 #
 # make setup-apt-to-runner-images
@@ -47,12 +48,21 @@ basedir=$(dirname "$0")
 [ -f "${basedir}/vita-versions.sh" ] && source "${basedir}/vita-versions.sh"
 
 sudo rm -f \
+  /etc/apt/sources.list.d/00-security.debian.org.list \
+  /etc/apt/sources.list.d/01-mirror.linux.org.au.list \
   /etc/apt/sources.list.d/pgdg.list \
   /etc/apt/sources.list.d/azure-cli.list
 
 sudo apt-get update
 sudo apt-get install wget lsb-release -y
 lsb_release -cs
+
+ echo "deb http://security.debian.org/debian-security $(lsb_release -cs)-security main contrib non-free" \
+   | sudo tee /etc/apt/sources.list.d/00-security.debian.org.list
+
+ (echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs) main contrib non-free" \
+  && echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs)-updates main contrib non-free" \
+ ) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
 
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc \
   | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc | sudo apt-key add -
@@ -63,13 +73,6 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
   | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc | sudo apt-key add -
 echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   | sudo tee /etc/apt/sources.list.d/azure-cli.list
-
- (echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs) main contrib non-free" \
-  && echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs)-updates main contrib non-free" \
- ) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
-
- echo "deb http://security.debian.org/debian-security $(lsb_release -cs)-security main contrib non-free" \
-   | sudo tee /etc/apt/sources.list.d/00-security.debian.org.list
 
 sudo apt-get update
 #  Note: includes all the dependencies for Python builds
