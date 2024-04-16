@@ -50,13 +50,6 @@ sudo rm -f \
   /etc/apt/sources.list.d/pgdg.list \
   /etc/apt/sources.list.d/azure-cli.list
 
-(echo 'deb http://mirror.linux.org.au/debian bookworm main contrib non-free' \
- && echo 'deb http://mirror.linux.org.au/debian bookworm-updates main contrib non-free' \
-) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
-
-echo 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free' \
-  | sudo tee /etc/apt/sources.list.d/00-security.debian.org.list
-
 sudo apt-get update
 sudo apt-get install wget lsb-release -y
 lsb_release -cs
@@ -71,8 +64,15 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
 echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   | sudo tee /etc/apt/sources.list.d/azure-cli.list
 
+ (echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs) main contrib non-free" \
+  && echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs)-updates main contrib non-free" \
+ ) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
+
+ echo "deb http://security.debian.org/debian-security $(lsb_release -cs)-security main contrib non-free" \
+   | sudo tee /etc/apt/sources.list.d/00-security.debian.org.list
+
 sudo apt-get update
-# Note: includes all the dependencies for Python builds
+#  Note: includes all the dependencies for Python builds
 sudo apt-get install \
   azure-cli \
   build-essential \
