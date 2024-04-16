@@ -52,10 +52,10 @@ sudo rm -f \
 
 (echo 'deb http://mirror.linux.org.au/debian bookworm main contrib non-free' \
  && echo 'deb http://mirror.linux.org.au/debian bookworm-updates main contrib non-free' \
-) > /etc/apt/sources.list.d/01-mirror.linux.org.au.list
+) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
 
 echo 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free' \
-  > /etc/apt/sources.list.d/00-security.debian.org.list
+  | sudo tee /etc/apt/sources.list.d/00-security.debian.org.list
 
 sudo apt-get update
 sudo apt-get install wget lsb-release -y
