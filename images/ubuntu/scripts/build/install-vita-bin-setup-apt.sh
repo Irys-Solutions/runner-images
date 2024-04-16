@@ -49,6 +49,7 @@ basedir=$(dirname "$0")
 
 sudo rm -f \
   /etc/apt/sources.list.d/00-security.debian.org.list \
+  /etc/apt/sources.list.d/00-security.ubuntu.com.list \
   /etc/apt/sources.list.d/01-mirror.linux.org.au.list \
   /etc/apt/sources.list.d/pgdg.list \
   /etc/apt/sources.list.d/azure-cli.list
@@ -56,13 +57,20 @@ sudo rm -f \
 sudo apt-get update
 sudo apt-get install wget lsb-release -y
 lsb_release -cs
+if [ X"$(lsb_release -is)"X = X"Debian"X ]; then
+  echo "deb http://security.debian.org/debian-security $(lsb_release -cs)-security main contrib non-free" \
+    | sudo tee /etc/apt/sources.list.d/00-security.debian.org.list
 
- echo "deb http://security.debian.org/debian-security $(lsb_release -cs)-security main contrib non-free" \
-   | sudo tee /etc/apt/sources.list.d/00-security.debian.org.list
-
- (echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs) main contrib non-free" \
-  && echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs)-updates main contrib non-free" \
- ) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
+  (echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs) main contrib non-free" \
+   && echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs)-updates main contrib non-free" \
+  ) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
+elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
+  echo "deb http://security.ubuntu.com/ubuntu $(lsb_release -cs)-security main restricted universe multiverse" \
+    | sudo tee /etc/apt/sources.list.d/00-security.ubuntu.com.list
+else
+  echo "Unknown distribution: $(lsb_release -is)"
+  exit 1
+fi
 
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc \
   | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc | sudo apt-key add -
