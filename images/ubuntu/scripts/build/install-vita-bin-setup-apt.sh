@@ -46,47 +46,78 @@ basedir=$(dirname "$0")
 
 [ -f "${basedir}/vita-versions.sh" ] && source "${basedir}/vita-versions.sh"
 
-sudo rm -f /etc/apt/sources.list.d/pgdg.list /etc/apt/sources.list.d/azure-cli.list
+sudo rm -f \
+  /etc/apt/sources.list.d/pgdg.list \
+  /etc/apt/sources.list.d/azure-cli.list
+
+(echo 'deb http://mirror.linux.org.au/debian bookworm main contrib non-free' \
+ && echo 'deb http://mirror.linux.org.au/debian bookworm-updates main contrib non-free' \
+) > /etc/apt/sources.list.d/01-mirror.linux.org.au.list
+
+echo 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free' \
+  > /etc/apt/sources.list.d/00-security.debian.org.list
+
 sudo apt-get update
 sudo apt-get install wget lsb-release -y
 lsb_release -cs
+
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc \
   | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc | sudo apt-key add -
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs 2>/dev/null)-pgdg main" \
   | sudo tee /etc/apt/sources.list.d/pgdg.list
+
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
   | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc | sudo apt-key add -
 echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   | sudo tee /etc/apt/sources.list.d/azure-cli.list
+
 sudo apt-get update
-# Note: includes all the dependencies for Python
+# Note: includes all the dependencies for Python builds
 sudo apt-get install \
   azure-cli \
+  build-essential \
+  curl \
+  dialog \
+  dnsutils \
   gettext \
   git \
   git-lfs \
+  inetutils-ping \
+  inetutils-traceroute \
   jq \
-  moreutils \
-  nodejs \
-  build-essential \
-  curl \
+  lbzip2 \
+  less \
   libbz2-dev \
   libffi-dev \
   libgdbm-dev \
   libncurses5-dev \
   libnss3-dev \
-  libreadline-dev \
   libpq-dev \
+  libreadline-dev \
   libsqlite3-dev \
   libssl-dev \
+  libz-dev \
+  locales \
+  locales-all \
+  lsof \
+  moreutils \
+  net-tools \
   postgresql-client \
   procps \
   python3 \
   python3-pip \
   python3-virtualenv \
   redis-tools \
+  rsync \
+  screen \
+  sysfsutils \
   time \
+  tmux \
+  unzip \
+  vim-tiny \
+  wait-for-it \
   wget \
+  wget2 \
   yarnpkg \
   zlib1g-dev \
   -y
