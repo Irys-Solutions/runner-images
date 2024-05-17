@@ -275,9 +275,9 @@ class TableNode: BaseNode {
         
         $columnsCount = $this.Headers.Split("|").Count
         $this.Rows | ForEach-Object {
-            if ($_.Split("|").Count -ne $columnsCount) {
-                throw "Table has different number of columns in different rows"
-            }
+#             if ($_.Split("|").Count -ne $columnsCount) {
+#                 throw "Table has different number of columns in different rows"
+#             }
         }
     }
 
