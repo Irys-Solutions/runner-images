@@ -310,10 +310,11 @@ class TableNode: BaseNode {
 
     hidden [Int32[]] CalculateColumnsWidth() {
         $maxColumnWidths = $this.Headers.Split("|") | ForEach-Object { $_.Length }
-        $columnsCount = $maxColumnWidths.Count
+        $maxColumnsCount = $maxColumnWidths.Count
 
         $this.Rows | ForEach-Object {
             $columnWidths = $_.Split("|") | ForEach-Object { $_.Length }
+            $columnsCount = [Math]::Min($maxColumnsCount, $columnWidths.Count)
             for ($colIndex = 0; $colIndex -lt $columnsCount; $colIndex++) {
                 $maxColumnWidths[$colIndex] = [Math]::Max($maxColumnWidths[$colIndex], $columnWidths[$colIndex])
             }
