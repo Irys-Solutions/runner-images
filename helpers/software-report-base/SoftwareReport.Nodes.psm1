@@ -286,7 +286,7 @@ class TableNode: BaseNode {
         $Rows | ForEach-Object {
             $rowColumnsCount = $_.Split("|").Count
             if ($rowColumnsCount -lt $maxColumnsCount) {
-                $this.Rows.Append($_ + "|" + [String]::Join("|", @("-") * ($maxColumnsCount - $rowColumnsCount))
+                $this.Rows.Append($_ + "|" + [String]::Join("|", @("-") * ($maxColumnsCount - $rowColumnsCount)))
             } else {
                 $this.Rows.Append($_)
             }
