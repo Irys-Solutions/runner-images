@@ -274,7 +274,7 @@ class TableNode: BaseNode {
         $maxColumnsCount = $headerColumnsCount
         $Rows | ForEach-Object {
              $rowColumnsCount = $_.Split("|").Count
-             if ($rowColumnsCount -gt $columnsCount) {
+             if ($rowColumnsCount -gt $maxColumnsCount) {
                  $maxColumnsCount = $rowColumnsCount
              }
         }
