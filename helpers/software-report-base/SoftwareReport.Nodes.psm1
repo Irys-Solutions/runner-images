@@ -270,14 +270,26 @@ class TableNode: BaseNode {
     [String[]] $Rows
 
     TableNode([String] $Headers, [String[]] $Rows) {
-        $this.Headers = $Headers
-        $this.Rows = $Rows
-        
-        $columnsCount = $this.Headers.Split("|").Count
-        $this.Rows | ForEach-Object {
-#             if ($_.Split("|").Count -ne $columnsCount) {
-#                 throw "Table has different number of columns in different rows"
-#             }
+        $headerColumnsCount = $Headers.Split("|").Count
+        $maxColumnsCount = $headerColumnsCount
+        $Rows | ForEach-Object {
+             $rowColumnsCount = $_.Split("|").Count
+             if ($rowColumnsCount -gt $columnsCount) {
+                 $maxColumnsCount = $rowColumnsCount
+             }
+        }
+        if ($headerColumnsCount -lt $maxColumnsCount) {
+            $this.Headers = $Headers + "|" + [String]::Join("|", @("-") * ($maxColumnsCount - $headerColumnsCount))
+        } else {
+            $this.Headers = $Headers
+        }
+        $Rows | ForEach-Object {
+            $rowColumnsCount = $_.Split("|").Count
+            if ($rowColumnsCount -lt $maxColumnsCount) {
+                $this.Rows.Append($_ + "|" + [String]::Join("|", @("-") * ($maxColumnsCount - $rowColumnsCount))
+            } else {
+                $this.Rows.Append($_)
+            }
         }
     }
 
@@ -310,11 +322,10 @@ class TableNode: BaseNode {
 
     hidden [Int32[]] CalculateColumnsWidth() {
         $maxColumnWidths = $this.Headers.Split("|") | ForEach-Object { $_.Length }
-        $maxColumnsCount = $maxColumnWidths.Count
+        $columnsCount = $maxColumnWidths.Count
 
         $this.Rows | ForEach-Object {
             $columnWidths = $_.Split("|") | ForEach-Object { $_.Length }
-            $columnsCount = [Math]::Min($maxColumnsCount, $columnWidths.Count)
             for ($colIndex = 0; $colIndex -lt $columnsCount; $colIndex++) {
                 $maxColumnWidths[$colIndex] = [Math]::Max($maxColumnWidths[$colIndex], $columnWidths[$colIndex])
             }
