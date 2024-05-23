@@ -272,7 +272,6 @@ class TableNode: BaseNode {
     TableNode([String] $Headers, [String[]] $Rows) {
         $headerColumnsCount = $Headers.Split("|").Count
         $maxColumnsCount = $headerColumnsCount
-        $OriginalRows = $Rows
         $Rows | ForEach-Object {
              $rowColumnsCount = $_.Split("|").Count
              if ($rowColumnsCount -gt $maxColumnsCount) {
@@ -284,7 +283,8 @@ class TableNode: BaseNode {
         } else {
             $this.Headers = $Headers
         }
-        $OriginalRows | ForEach-Object {
+        $this.Rows = [String[]]::new()
+        $Rows | ForEach-Object {
             $rowColumnsCount = $_.Split("|").Count
             if ($rowColumnsCount -lt $maxColumnsCount) {
                 $this.Rows.Append($_ + "|" + [String]::Join("|", @("-") * ($maxColumnsCount - $rowColumnsCount)))
