@@ -2,15 +2,17 @@
 #
 # v--- IMPORTANT NOTE ---v
 #
-# NOTE: Changes should be made in the source of truth here:
+# NOTE: Changes should be made in the sources of truth here:
 # https://github.com/Irys-Solutions/vita/blob/main/bin/vita-versions.sh
+# https://github.com/Irys-Solutions/vita/blob/main/bin/setup-apt.sh
 #
 # After that then they should be copied to here:
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/assets/post-gen/vita-bin-setup-apt.sh
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/scripts/build/install-vita-bin-setup-apt.sh
 #
-# Assuming vita and runner-images are checked out in the same parent directory;
-# to copy to the runner-images repository, in the vita repository, run:
+# To do this copy to the runner-images repository,
+# assuming vita and runner-images are checked out in the same parent directory,
+# in the vita repository, run:
 #
 # make setup-apt-to-runner-images
 #
@@ -26,16 +28,17 @@ export PYTHON_VERSION="3.12"
 
 # v--- IMPORTANT NOTE ---v
 #
-# NOTE: Changes should be made in the source of truth here:
+# NOTE: Changes should be made in the sources of truth here:
 # https://github.com/Irys-Solutions/vita/blob/main/bin/vita-versions.sh
+# https://github.com/Irys-Solutions/vita/blob/main/bin/setup-apt.sh
 #
 # After that then they should be copied to here:
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/assets/post-gen/vita-bin-setup-apt.sh
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/scripts/build/install-vita-bin-setup-apt.sh
 #
-# Assuming vita and runner-images are checked out in the same parent directory;
-
-# to copy to the runner-images repository, in the vita repository, run:
+# To do this copy to the runner-images repository,
+# assuming vita and runner-images are checked out in the same parent directory,
+# in the vita repository, run:
 #
 # make setup-apt-to-runner-images
 #
