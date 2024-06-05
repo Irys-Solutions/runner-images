@@ -283,13 +283,12 @@ class TableNode: BaseNode {
         } else {
             $this.Headers = $Headers
         }
-        $this.Rows = [String[]]::new()
-        $Rows | ForEach-Object {
+        $this.Rows = $Rows | ForEach-Object {
             $rowColumnsCount = $_.Split("|").Count
             if ($rowColumnsCount -lt $maxColumnsCount) {
-                $this.Rows.Append($_ + "|" + [String]::Join("|", @("-") * ($maxColumnsCount - $rowColumnsCount)))
+                $_ + "|" + [String]::Join("|", @("-") * ($maxColumnsCount - $rowColumnsCount))
             } else {
-                $this.Rows.Append($_)
+                $_
             }
         }
     }
