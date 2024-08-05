@@ -7,25 +7,24 @@
 # https://github.com/Irys-Solutions/vita/blob/main/bin/setup-apt.sh
 #
 # After that then they should be copied to here:
+# https://github.com/Irys-Solutions/dresden/blob/main/dresden/install/vita-bin-setup-apt.sh
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/assets/post-gen/vita-bin-setup-apt.sh
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/scripts/build/install-vita-bin-setup-apt.sh
 #
-# To do this copy to the runner-images repository,
-# assuming vita and runner-images are checked out in the same parent directory,
+# To do this copy to the dresden and runner-images repositories,
+# assuming vita, dresden, and runner-images are checked out in the same parent directory,
 # in the vita repository, run:
 #
-# make setup-apt-to-runner-images
+# make push-setup-apt
 #
 # ^--- IMPORTANT NOTE ---^
 
 export NODE_VERSION="18"
-export OLD_PYTHON_SOURCE_VERSION="3.8.19"
-export OLD_PYTHON_VERSION="3.8"
 export POSTGRES_SERVER_VERSION="15" # NOTE: vita-ci-cd.yml has to be updated with the same version
 export PYTHON_SOURCE_VERSION="3.12.3"
 export PYTHON_VERSION="3.12"
 #!/bin/bash -xe
-
+#
 # v--- IMPORTANT NOTE ---v
 #
 # NOTE: Changes should be made in the sources of truth here:
@@ -33,14 +32,15 @@ export PYTHON_VERSION="3.12"
 # https://github.com/Irys-Solutions/vita/blob/main/bin/setup-apt.sh
 #
 # After that then they should be copied to here:
+# https://github.com/Irys-Solutions/dresden/blob/main/dresden/install/vita-bin-setup-apt.sh
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/assets/post-gen/vita-bin-setup-apt.sh
 # https://github.com/Irys-Solutions/runner-images/blob/main/runner-images/images/ubuntu/scripts/build/install-vita-bin-setup-apt.sh
 #
-# To do this copy to the runner-images repository,
-# assuming vita and runner-images are checked out in the same parent directory,
+# To do this copy to the dresden and runner-images repositories,
+# assuming vita, dresden, and runner-images are checked out in the same parent directory,
 # in the vita repository, run:
 #
-# make setup-apt-to-runner-images
+# make push-setup-apt
 #
 # ^--- IMPORTANT NOTE ---^
 
@@ -56,10 +56,19 @@ sudo rm -f \
   /etc/apt/sources.list.d/01-mirror.linux.org.au.list \
   /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list \
   /etc/apt/sources.list.d/pgdg.list \
-  /etc/apt/sources.list.d/azure-cli.list
+  /etc/apt/sources.list.d/azure-cli.list \
+  /etc/apt/sources.list.d/yarn.list
 
 sudo apt-get update
-sudo apt-get install wget lsb-release -y
+sudo apt-get install \
+  curl \
+  gpg \
+  lsb-release \
+  software-properties-common \
+  sudo \
+  wget \
+  -y
+
 lsb_release -cs
 if [ X"$(lsb_release -is)"X = X"Debian"X ]; then
   echo "deb http://security.debian.org/debian-security $(lsb_release -cs)-security main contrib non-free" \
@@ -80,6 +89,8 @@ else
   exit 1
 fi
 
+add-apt-repository ppa:deadsnakes/ppa -y # Python repository
+
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc \
   | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc | sudo apt-key add -
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs 2>/dev/null)-pgdg main" \
@@ -90,14 +101,25 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
 echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   | sudo tee /etc/apt/sources.list.d/azure-cli.list
 
+wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] http://dl.yarnpkg.com/debian/ stable main" \
+ | sudo tee /etc/apt/sources.list.d/yarn.list
+
+curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" > "setup_${NODE_VERSION}.x.sh"
+[ -f "setup_${NODE_VERSION}.x.sh" ]
+bash "setup_${NODE_VERSION}.x.sh"
+
 sudo apt-get update
+sudo apt-get upgrade -y
 #  Note: includes all the dependencies for Python builds
 sudo apt-get install \
   azure-cli \
   build-essential \
+  cron \
   curl \
   dialog \
   dnsutils \
+  file \
   gettext \
   git \
   git-lfs \
@@ -109,6 +131,7 @@ sudo apt-get install \
   libbz2-dev \
   libffi-dev \
   libgdbm-dev \
+  libicu70 \
   libncurses5-dev \
   libnss3-dev \
   libpq-dev \
@@ -121,8 +144,14 @@ sudo apt-get install \
   lsof \
   moreutils \
   net-tools \
+  netcat-traditional \
+  nginx-light \
+  nodejs \
+  pip \
   postgresql-client \
   procps \
+  python"$PYTHON_VERSION" \
+  python"$PYTHON_VERSION"-venv \
   python3 \
   python3-pip \
   python3-virtualenv \
@@ -137,25 +166,11 @@ sudo apt-get install \
   wait-for-it \
   wget \
   wget2 \
-  yarnpkg \
+  yarn \
+  zip \
   zlib1g-dev \
   -y
 sudo apt-get autoremove
-# KEEP INSTALL OF OLD PYTHON VERSION for now, until we complete migration in OSLO-5150
-if which "python${OLD_PYTHON_VERSION}"; then
-  echo "Python ${OLD_PYTHON_VERSION} installed already"
-else
-  echo "Python ${OLD_PYTHON_VERSION} installing from source"
-  cd /tmp
-  curl -O "https://www.python.org/ftp/python/${OLD_PYTHON_SOURCE_VERSION}/Python-${OLD_PYTHON_SOURCE_VERSION}.tgz"
-  tar xzf "Python-${OLD_PYTHON_SOURCE_VERSION}.tgz"
-  cd "Python-${OLD_PYTHON_SOURCE_VERSION}"
-  ./configure --enable-optimizations
-  make -j "$(nproc)"
-  sudo make altinstall
-  cd
-  sudo rm -rf /tmp/Python*
-fi
 if which "python${PYTHON_VERSION}"; then
   echo "Python ${PYTHON_VERSION} installed already"
 else
