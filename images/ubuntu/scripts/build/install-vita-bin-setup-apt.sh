@@ -79,6 +79,7 @@ if [ X"$(lsb_release -is)"X = X"Debian"X ]; then
    && echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs)-updates main contrib non-free" \
   ) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
  source /etc/os-release
+ wget -q https://packages.microsoft.com/config/debian/"$VERSION_ID"/packages-microsoft-prod.deb
 elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
   echo "deb http://security.ubuntu.com/ubuntu $(lsb_release -cs)-security main restricted universe multiverse" \
     | sudo tee /etc/apt/sources.list.d/00-security.ubuntu.com.list
@@ -86,14 +87,14 @@ elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
     && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" \
     && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" \
   ) | sudo tee /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list
- source /etc/os-release
+  source /etc/os-release
+  wget -q https://packages.microsoft.com/config/ubuntu/"$VERSION_ID"/packages-microsoft-prod.deb
 else
   echo "Unknown distribution: $(lsb_release -is)"
   exit 1
 fi
 
 # Add Packages Microsoft Com (PMC) repository
-wget -q https://packages.microsoft.com/config/debian/"$VERSION_ID"/packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 # Delete the Microsoft repository keys file
 rm packages-microsoft-prod.deb
