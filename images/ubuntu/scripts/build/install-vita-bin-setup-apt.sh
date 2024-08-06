@@ -50,6 +50,9 @@ basedir=$(dirname "$0")
 
 [ -f "${basedir}/vita-versions.sh" ] && source "${basedir}/vita-versions.sh"
 
+# In case we are running as root without sudo installed
+( apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install sudo -y ) || true
+
 sudo rm -f \
   /etc/apt/sources.list.d/00-security.debian.org.list \
   /etc/apt/sources.list.d/00-security.ubuntu.com.list \
@@ -59,8 +62,6 @@ sudo rm -f \
   /etc/apt/sources.list.d/azure-cli.list \
   /etc/apt/sources.list.d/yarn.list
 
-# In case we are running as root without sudo installed
-( apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install sudo -y ) || true
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
