@@ -99,7 +99,7 @@ sudo dpkg -i packages-microsoft-prod.deb
 # Delete the Microsoft repository keys file
 rm packages-microsoft-prod.deb
 
-add-apt-repository ppa:deadsnakes/ppa -y # Python repository
+sudo add-apt-repository ppa:deadsnakes/ppa -y # Python repository
 
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc \
   | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc | sudo apt-key add -
