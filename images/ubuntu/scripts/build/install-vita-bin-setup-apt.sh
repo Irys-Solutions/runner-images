@@ -59,8 +59,12 @@ sudo rm -f \
   /etc/apt/sources.list.d/azure-cli.list \
   /etc/apt/sources.list.d/yarn.list
 
+# In case we are running as root without sudo installed
+( apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install sudo -y ) || true
+
 sudo apt-get update
-sudo apt-get install \
+sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   apt-transport-https \
   curl \
   gpg \
