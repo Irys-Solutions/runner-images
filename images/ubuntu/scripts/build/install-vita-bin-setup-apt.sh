@@ -86,9 +86,14 @@ if [ X"$(lsb_release -is)"X = X"Debian"X ]; then
  source /etc/os-release
  wget -q https://packages.microsoft.com/config/debian/"$VERSION_ID"/packages-microsoft-prod.deb
 elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
-  echo "deb http://security.ubuntu.com/ubuntu $(lsb_release -cs)-security main restricted universe multiverse" \
-    | sudo tee /etc/apt/sources.list.d/00-security.ubuntu.com.list
-  grep security.ubuntu.com /etc/apt/sources.list && rm /etc/apt/sources.list.d/00-security.ubuntu.com.list
+  if grep security.ubuntu.com /etc/apt/sources.list ; then
+    true
+  elif grep security.ubuntu.com /etc/apt/sources.list.d/* ; then
+    true
+  else
+    echo "deb http://security.ubuntu.com/ubuntu $(lsb_release -cs)-security main restricted universe multiverse" \
+      | sudo tee /etc/apt/sources.list.d/00-security.ubuntu.com.list
+  fi
   ( echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs) main restricted universe multiverse" \
     && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" \
     && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" \
