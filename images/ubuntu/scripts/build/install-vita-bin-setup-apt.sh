@@ -120,7 +120,7 @@ curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" > "setup_${NODE_
 bash "setup_${NODE_VERSION}.x.sh"
 
 sudo apt-get update
-sudo apt-get upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 #  Note: includes all the dependencies for Python builds
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   azure-cli \
