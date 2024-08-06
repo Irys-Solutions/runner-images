@@ -59,8 +59,6 @@ sudo rm -f \
   /etc/apt/sources.list.d/azure-cli.list \
   /etc/apt/sources.list.d/yarn.list
 
-export DEBIAN_FRONTEND=noninteractive
-
 sudo apt-get update
 sudo apt-get install \
   apt-transport-https \
@@ -124,7 +122,7 @@ bash "setup_${NODE_VERSION}.x.sh"
 sudo apt-get update
 sudo apt-get upgrade -y
 #  Note: includes all the dependencies for Python builds
-sudo apt-get install \
+sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   azure-cli \
   build-essential \
   cron \
