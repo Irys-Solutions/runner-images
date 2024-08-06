@@ -59,6 +59,8 @@ sudo rm -f \
   /etc/apt/sources.list.d/azure-cli.list \
   /etc/apt/sources.list.d/yarn.list
 
+export DEBIAN_FRONTEND=noninteractive
+
 sudo apt-get update
 sudo apt-get install \
   apt-transport-https \
