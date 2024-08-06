@@ -94,10 +94,10 @@ elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
     echo "deb http://security.ubuntu.com/ubuntu $(lsb_release -cs)-security main restricted universe multiverse" \
       | sudo tee /etc/apt/sources.list.d/00-security.ubuntu.com.list
   fi
-  ( echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs) main restricted universe multiverse" \
-    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" \
-    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" \
-  ) | sudo tee /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list
+#  ( echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs) main restricted universe multiverse" \
+#    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" \
+#    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" \
+#  ) | sudo tee /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list
   source /etc/os-release
   wget -q https://packages.microsoft.com/config/ubuntu/"$VERSION_ID"/packages-microsoft-prod.deb
 else
