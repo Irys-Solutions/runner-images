@@ -166,7 +166,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   moreutils \
   net-tools \
   netcat-traditional \
-  nginx-light \
+  nginx \
   nodejs \
   pip \
   postgresql-client \
