@@ -99,6 +99,9 @@ elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
 #    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" \
 #  ) | sudo tee /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list
   source /etc/os-release
+  if [ X"$(dpkg --print-architecture)"X = X"arm64"X ]; then
+    find /etc/apt -type f -name '*.list' -exec sed -i.bak "sX//[^/]*ubuntu.com/ubuntu X//ports.ubuntu.com/ubuntu-ports X" {} \;
+  fi
   wget -q https://packages.microsoft.com/config/ubuntu/"$VERSION_ID"/packages-microsoft-prod.deb
 else
   echo "Unknown distribution: $(lsb_release -is)"
@@ -109,6 +112,11 @@ fi
 sudo dpkg -i packages-microsoft-prod.deb
 # Delete the Microsoft repository keys file
 rm packages-microsoft-prod.deb
+if [ X"$(dpkg --print-architecture)"X = X"arm64"X ]; then
+  powershell=""
+else
+  powershell="powershell"
+fi
 
 sudo add-apt-repository ppa:deadsnakes/ppa -y # Python repository
 
@@ -129,6 +137,8 @@ echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] http://dl.yar
 curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" > "setup_${NODE_VERSION}.x.sh"
 [ -f "setup_${NODE_VERSION}.x.sh" ]
 bash "setup_${NODE_VERSION}.x.sh"
+
+find /etc/apt -type f -name '*.list' -print0 | xargs -0 more
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get remove yarnpkg -y  # Using yarn from dl.yarnpkg.com
@@ -171,7 +181,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   nodejs \
   pip \
   postgresql-client \
-  powershell \
+  $powershell \
   procps \
   python"$PYTHON_VERSION" \
   python"$PYTHON_VERSION"-venv \
