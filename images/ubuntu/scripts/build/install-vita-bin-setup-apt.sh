@@ -130,7 +130,8 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
 echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   | sudo tee /etc/apt/sources.list.d/azure-cli.list
 
-wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --no-tty --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg
+wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg \
+ | sudo gpg --no-tty --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] http://dl.yarnpkg.com/debian/ stable main" \
  | sudo tee /etc/apt/sources.list.d/yarn.list
 
