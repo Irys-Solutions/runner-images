@@ -130,7 +130,7 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
 echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   | sudo tee /etc/apt/sources.list.d/azure-cli.list
 
-wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg
+wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --no-tty --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] http://dl.yarnpkg.com/debian/ stable main" \
  | sudo tee /etc/apt/sources.list.d/yarn.list
 
@@ -141,8 +141,6 @@ bash "setup_${NODE_VERSION}.x.sh"
 find /etc/apt -type f -name '*.list' -print0 | xargs -0 more
 
 sudo apt-get update
-#sudo DEBIAN_FRONTEND=noninteractive apt-get remove yarnpkg -y  # Using yarn from dl.yarnpkg.com
-#sudo DEBIAN_FRONTEND=noninteractive apt-get remove yarn -y  # Using yarnpkg from dl.yarnpkg.com
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 #  Note: includes all the dependencies for Python builds
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
@@ -200,11 +198,17 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   wait-for-it \
   wget \
   wget2 \
-  yarnpkg \
   zip \
   zlib1g-dev \
   -y
-sudo apt-get autoremove
+if which yarn; then
+  echo "Yarn installed already"
+else
+  echo "Yarn installing from yarnpkg.com"
+  sudo DEBIAN_FRONTEND=noninteractive apt-get remove yarnpkg -y
+  sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install yarn -y
+fi
 if which "python${PYTHON_VERSION}"; then
   echo "Python ${PYTHON_VERSION} installed already"
 else
