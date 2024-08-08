@@ -141,7 +141,8 @@ bash "setup_${NODE_VERSION}.x.sh"
 find /etc/apt -type f -name '*.list' -print0 | xargs -0 more
 
 sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get remove yarnpkg -y  # Using yarn from dl.yarnpkg.com
+#sudo DEBIAN_FRONTEND=noninteractive apt-get remove yarnpkg -y  # Using yarn from dl.yarnpkg.com
+#sudo DEBIAN_FRONTEND=noninteractive apt-get remove yarn -y  # Using yarnpkg from dl.yarnpkg.com
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 #  Note: includes all the dependencies for Python builds
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
@@ -199,7 +200,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   wait-for-it \
   wget \
   wget2 \
-  yarn \
+  yarnpkg \
   zip \
   zlib1g-dev \
   -y
