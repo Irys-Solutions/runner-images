@@ -184,6 +184,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   $powershell \
   procps \
   python"$PYTHON_VERSION" \
+  python"$PYTHON_VERSION"-dev \
   python"$PYTHON_VERSION"-venv \
   python3 \
   python3-pip \
