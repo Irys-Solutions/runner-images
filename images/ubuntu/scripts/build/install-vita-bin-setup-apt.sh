@@ -67,6 +67,7 @@ sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   apt-transport-https \
+  ca-certificates \
   curl \
   gpg \
   lsb-release \
@@ -83,8 +84,6 @@ if [ X"$(lsb_release -is)"X = X"Debian"X ]; then
   (echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs) main contrib non-free" \
    && echo "deb http://mirror.linux.org.au/debian $(lsb_release -cs)-updates main contrib non-free" \
   ) | sudo tee /etc/apt/sources.list.d/01-mirror.linux.org.au.list
- source /etc/os-release
- wget -q https://packages.microsoft.com/config/debian/"$VERSION_ID"/packages-microsoft-prod.deb
 elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
   if grep security.ubuntu.com /etc/apt/sources.list ; then
     true
@@ -98,24 +97,12 @@ elif [ X"$(lsb_release -is)"X = X"Ubuntu"X ]; then
 #    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" \
 #    && echo "deb http://au.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" \
 #  ) | sudo tee /etc/apt/sources.list.d/01-au.archive.ubuntu.com.list
-  source /etc/os-release
   if [ X"$(dpkg --print-architecture)"X = X"arm64"X ]; then
     find /etc/apt -type f -name '*.list' -exec sed -i.bak "sX//[^/]*ubuntu.com/ubuntu X//ports.ubuntu.com/ubuntu-ports X" {} \;
   fi
-  wget -q https://packages.microsoft.com/config/ubuntu/"$VERSION_ID"/packages-microsoft-prod.deb
 else
   echo "Unknown distribution: $(lsb_release -is)"
   exit 1
-fi
-
-# Add Packages Microsoft Com (PMC) repository
-sudo dpkg -i packages-microsoft-prod.deb
-# Delete the Microsoft repository keys file
-rm packages-microsoft-prod.deb
-if [ X"$(dpkg --print-architecture)"X = X"arm64"X ]; then
-  powershell=""
-else
-  powershell="powershell"
 fi
 
 sudo add-apt-repository ppa:deadsnakes/ppa -y # Python repository
@@ -181,7 +168,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   nodejs \
   pip \
   postgresql-client \
-  $powershell \
   procps \
   python"$PYTHON_VERSION" \
   python"$PYTHON_VERSION"-dev \
