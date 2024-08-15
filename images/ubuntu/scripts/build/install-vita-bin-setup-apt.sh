@@ -105,8 +105,6 @@ else
   exit 1
 fi
 
-sudo add-apt-repository ppa:deadsnakes/ppa -y # Python repository
-
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc \
   | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc | sudo apt-key add -
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs 2>/dev/null)-pgdg main" \
@@ -150,7 +148,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   libbz2-dev \
   libffi-dev \
   libgdbm-dev \
-  libicu70 \
   libncurses5-dev \
   libnss3-dev \
   libpq-dev \
@@ -169,9 +166,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   pip \
   postgresql-client \
   procps \
-  python"$PYTHON_VERSION" \
-  python"$PYTHON_VERSION"-dev \
-  python"$PYTHON_VERSION"-venv \
   python3 \
   python3-pip \
   python3-virtualenv \
@@ -189,6 +183,9 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   zip \
   zlib1g-dev \
   -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install \
+  libicu70 \
+  -y || true # This is gone in latest debian and Ubuntu
 if which yarn; then
   echo "Yarn installed already"
 else
@@ -199,6 +196,15 @@ else
 fi
 if which "python${PYTHON_VERSION}"; then
   echo "Python ${PYTHON_VERSION} installed already"
+elif sudo add-apt-repository ppa:deadsnakes/ppa -y; then
+  sudo apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+  #  Note: includes all the dependencies for Python builds
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install \
+    python"$PYTHON_VERSION" \
+    python"$PYTHON_VERSION"-dev \
+    python"$PYTHON_VERSION"-venv \
+    -y
 else
   echo "Python ${PYTHON_VERSION} installing from source"
   cd /tmp
