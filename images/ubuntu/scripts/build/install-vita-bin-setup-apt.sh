@@ -21,8 +21,10 @@
 
 export NODE_VERSION="18"
 export POSTGRES_SERVER_VERSION="15" # NOTE: vita-ci-cd.yml has to be updated with the same version
-export PYTHON_SOURCE_VERSION="3.12.3"
+export PYTHON_SOURCE_VERSION="3.12.6"
 export PYTHON_VERSION="3.12"
+export OTHER_PYTHON_SOURCE_VERSION="3.12.6"
+export OTHER_PYTHON_VERSION="3.12"
 #!/bin/bash -xe
 #
 # v--- IMPORTANT NOTE ---v
@@ -63,14 +65,18 @@ sudo rm -f \
   /etc/apt/sources.list.d/yarn.list
 
 
-sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get purge \
+  postgresql-client \
+  postgresql-client-common \
+  -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   apt-transport-https \
   ca-certificates \
   curl \
   gpg \
   lsb-release \
+  postgresql-common \
   software-properties-common \
   sudo \
   wget \
@@ -105,18 +111,15 @@ else
   exit 1
 fi
 
-wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc \
-  | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc | sudo apt-key add -
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs 2>/dev/null)-pgdg main" \
-  | sudo tee /etc/apt/sources.list.d/pgdg.list
+sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
 
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
-  | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc | sudo apt-key add -
+  | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
 echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   | sudo tee /etc/apt/sources.list.d/azure-cli.list
 
 wget -qO - https://dl.yarnpkg.com/debian/pubkey.gpg \
-  | sudo tee /etc/apt/trusted.gpg.d/yarn-archive-keyring.asc | sudo apt-key add -
+  | sudo tee /etc/apt/trusted.gpg.d/yarn-archive-keyring.asc
 echo "deb http://dl.yarnpkg.com/debian/ stable main" \
  | sudo tee /etc/apt/sources.list.d/yarn.list
 
@@ -126,8 +129,9 @@ bash "setup_${NODE_VERSION}.x.sh"
 
 find /etc/apt -type f -name '*.list' -print0 | xargs -0 more
 
-sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -i -p -v "$POSTGRES_SERVER_VERSION" -y
 #  Note: includes all the dependencies for Python builds
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   azure-cli \
@@ -136,10 +140,12 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   curl \
   dialog \
   dnsutils \
+  expect \
   file \
   gettext \
   git \
   git-lfs \
+  git-restore-mtime \
   inetutils-ping \
   inetutils-traceroute \
   jq \
@@ -164,7 +170,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   nginx \
   nodejs \
   pip \
-  postgresql-client \
   procps \
   python3 \
   python3-pip \
@@ -194,11 +199,34 @@ else
   sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
   sudo DEBIAN_FRONTEND=noninteractive apt-get install yarn -y
 fi
+
+if which "python${OTHER_PYTHON_VERSION}"; then
+  echo "Python ${OTHER_PYTHON_VERSION} installed already"
+elif sudo add-apt-repository ppa:deadsnakes/ppa -y; then
+  sudo apt-get update
+  #  Note: includes all the dependencies for Python builds
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install \
+    python"$OTHER_PYTHON_VERSION" \
+    python"$OTHER_PYTHON_VERSION"-dev \
+    python"$OTHER_PYTHON_VERSION"-venv \
+    -y
+else
+  echo "Python ${OTHER_PYTHON_VERSION} installing from source"
+  cd /tmp
+  curl -O "https://www.python.org/ftp/python/${OTHER_PYTHON_SOURCE_VERSION}/Python-${OTHER_PYTHON_SOURCE_VERSION}.tgz"
+  tar xzf "Python-${OTHER_PYTHON_SOURCE_VERSION}.tgz"
+  cd "Python-${OTHER_PYTHON_SOURCE_VERSION}"
+  ./configure --enable-optimizations
+  make -j "$(nproc)"
+  sudo make altinstall
+  cd
+  sudo rm -rf /tmp/Python*
+fi
+
 if which "python${PYTHON_VERSION}"; then
   echo "Python ${PYTHON_VERSION} installed already"
 elif sudo add-apt-repository ppa:deadsnakes/ppa -y; then
   sudo apt-get update
-  sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
   #  Note: includes all the dependencies for Python builds
   sudo DEBIAN_FRONTEND=noninteractive apt-get install \
     python"$PYTHON_VERSION" \
