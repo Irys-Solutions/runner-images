@@ -4,6 +4,7 @@ Describe "Apache" {
     }
 
     It "Apache Service" {
+        "apachectl configtest" | Should -ReturnZeroExitCode
         "sudo systemctl start apache2" | Should -ReturnZeroExitCode
         "apachectl configtest" | Should -ReturnZeroExitCode
         "sudo systemctl stop apache2" | Should -ReturnZeroExitCode
@@ -16,6 +17,7 @@ Describe "Nginx" {
     }
 
     It "Nginx Service" {
+        "sudo nginx -t" | Should -ReturnZeroExitCode
         "sudo systemctl start nginx" | Should -ReturnZeroExitCode
         "sudo nginx -t" | Should -ReturnZeroExitCode
         "sudo systemctl stop nginx" | Should -ReturnZeroExitCode
