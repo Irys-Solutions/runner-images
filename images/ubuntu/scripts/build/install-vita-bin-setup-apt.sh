@@ -66,21 +66,21 @@ sudo rm -f \
 
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get purge \
-  postgresql-client \
-  postgresql-client-common \
-  -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   apt-transport-https \
   ca-certificates \
   curl \
   gpg \
   lsb-release \
-  postgresql-common \
   software-properties-common \
   sudo \
   wget \
   -y
+
+if ! [ -f /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh ] ; then
+  sudo DEBIAN_FRONTEND=noninteractive apt-get remove postgresql-client postgresql-client-common -y || true
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install postgresql-common -y
+fi
 
 lsb_release -cs
 if [ X"$(lsb_release -is)"X = X"Debian"X ]; then
