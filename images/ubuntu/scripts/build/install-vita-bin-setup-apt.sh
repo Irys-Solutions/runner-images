@@ -171,9 +171,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   nodejs \
   pip \
   procps \
-  python3 \
-  python3-pip \
-  python3-virtualenv \
   redis-tools \
   rsync \
   screen \
@@ -245,3 +242,8 @@ else
   cd
   sudo rm -rf /tmp/Python*
 fi
+sudo DEBIAN_FRONTEND=noninteractive apt-get install \
+  python3 \
+  python3-pip \
+  python3-virtualenv \
+  -y
