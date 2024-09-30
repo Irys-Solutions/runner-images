@@ -229,7 +229,7 @@ build {
 
   provisioner "file" {
     destination = "${var.installer_script_folder}/toolset.json"
-    source      = "${path.root}/../toolsets/toolset-2204.json"
+    source      = "${path.root}/../toolsets/toolset-2204-shrunk.json"
   }
 
   provisioner "shell" {
@@ -293,7 +293,7 @@ build {
       "${path.root}/../scripts/build/install-dotnetcore-sdk.sh",
 #      "${path.root}/../scripts/build/install-firefox.sh",
 #      "${path.root}/../scripts/build/install-microsoft-edge.sh",
-#      "${path.root}/../scripts/build/install-gcc-compilers.sh",
+     "${path.root}/../scripts/build/install-gcc-compilers.sh",
 #      "${path.root}/../scripts/build/install-gfortran.sh",
       "${path.root}/../scripts/build/install-git.sh",
       "${path.root}/../scripts/build/install-git-lfs.sh",
@@ -320,7 +320,7 @@ build {
 #      "${path.root}/../scripts/build/install-php.sh",
 #      "${path.root}/../scripts/build/install-postgresql.sh",
 #      "${path.root}/../scripts/build/install-pulumi.sh",
-#      "${path.root}/../scripts/build/install-ruby.sh",
+     "${path.root}/../scripts/build/install-ruby.sh",
 #      "${path.root}/../scripts/build/install-rlang.sh",
 #      "${path.root}/../scripts/build/install-rust.sh",
 #      "${path.root}/../scripts/build/install-julia.sh",
