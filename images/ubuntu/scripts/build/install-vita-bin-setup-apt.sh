@@ -20,11 +20,11 @@
 # ^--- IMPORTANT NOTE ---^
 
 export NODE_VERSION="18"
-export POSTGRES_SERVER_VERSION="15" # NOTE: vita-ci-cd.yml has to be updated with the same version
-export PYTHON_SOURCE_VERSION="3.12.6"
-export PYTHON_VERSION="3.12"
-export OTHER_PYTHON_SOURCE_VERSION="3.12.6"
-export OTHER_PYTHON_VERSION="3.12"
+export POSTGRES_SERVER_VERSION="15" # NOTE: vita-global-variables.yml should be updated with this
+export PYTHON_SOURCE_VERSION="3.12.6"  # https://www.python.org/ftp/python/
+export PYTHON_VERSION="3.12"  # NOTE: vita-global-variables.yml and dresden-ci-cd.yml should be updated with this
+export OTHER_PYTHON_SOURCE_VERSION="3.12.6"  # https://www.python.org/ftp/python/
+export OTHER_PYTHON_VERSION="3.12"  # NOTE: If we are rotating python version, put the old one here for a while
 #!/bin/bash -xe
 #
 # v--- IMPORTANT NOTE ---v
