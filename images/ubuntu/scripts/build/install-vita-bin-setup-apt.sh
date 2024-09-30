@@ -125,7 +125,7 @@ echo "deb http://dl.yarnpkg.com/debian/ stable main" \
 
 curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" > "setup_${NODE_VERSION}.x.sh"
 [ -f "setup_${NODE_VERSION}.x.sh" ]
-bash "setup_${NODE_VERSION}.x.sh"
+sudo bash "setup_${NODE_VERSION}.x.sh"
 
 find /etc/apt -type f -name '*.list' -print0 | xargs -0 more
 
