@@ -131,7 +131,7 @@ find /etc/apt -type f -name '*.list' -print0 | xargs -0 more
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -i -p -v "$POSTGRES_SERVER_VERSION" -y
+sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -i -v "$POSTGRES_SERVER_VERSION" -y
 #  Note: includes all the dependencies for Python builds
 sudo DEBIAN_FRONTEND=noninteractive apt-get install \
   azure-cli \
